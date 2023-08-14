@@ -1,0 +1,80 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container text-center mb-5">
+    <h2>{{video.name}}</h2>
+
+    <video class="embed-responsive embed-responsive-16by9" controls="controls" width="1000">
+        <source src="{{video.video.url}}" type="video/mp4">
+        <track src="/media/subtitles/{{video.name}}.vtt" kind="subtitles" srclang="en" label="English" default>
+    </video>
+
+    <h3 class="text-start mt-3">- Subtitles</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <input type="text" name="subFile" value="{{video.name}}.vtt" hidden>
+        <table class="table table-bordered" id="vttTable">
+            <thead>
+                <th>Start (HH:MM:SS)</th>
+                <th>End (HH:MM:SS)</th>
+                <th>Subtitles</th>
+            </thead>
+            <tbody>
+                {% for subtitle in subtitles %}
+                <tr>
+                    <td>
+                        <input type="text" name="startTime" class="form-control" placeholder="Enter Start Time in format HH:MM:SS" value="{{subtitle.start}}">
+                    </td>
+                    <td>
+                        <input type="text" name="endTime" class="form-control" placeholder="Enter End Time in format HH:MM:SS" value="{{subtitle.end}}">
+                    </td>
+                    <td>
+                        <textarea name="subs" class="form-control">{{subtitle.text}}</textarea>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+    <button onclick="addRow()" class="btn btn-danger mt-3">Add Row</button>
+</div>
+
+<script>
+    function addRow() {
+        // Get a reference to the table
+        let tableRef = document.getElementById("vttTable");
+
+        // Insert a row at the end of the table
+        let newRow = tableRef.insertRow(-1);
+
+        // Insert a cell in the row at index 0
+        let startCell = newRow.insertCell(0);
+        let endCell = newRow.insertCell(1);
+        let subCell = newRow.insertCell(2);
+
+        // Append a text node to the cell
+        startInput = document.createElement('input');
+        startInput.setAttribute('type','text');
+        startInput.setAttribute('name','startTime');
+        startInput.setAttribute('class','form-control');
+        startInput.setAttribute('placeholder','Enter Start Time in format HH:MM:SS');
+
+        endInput = document.createElement('input');
+        endInput.setAttribute('type','text');
+        endInput.setAttribute('name','endTime');
+        endInput.setAttribute('class','form-control');
+        endInput.setAttribute('placeholder','Enter End Time in format HH:MM:SS');
+
+        subInput = document.createElement('textarea');
+        subInput.setAttribute('name','subs');
+        subInput.setAttribute('class','form-control');
+        subInput.setAttribute('placeholder','Enter Subtitles');
+
+        startCell.appendChild(startInput);
+        endCell.appendChild(endInput);
+        subCell.appendChild(subInput);
+    }
+</script>
+{% endblock content %}

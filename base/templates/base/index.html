@@ -1,0 +1,66 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="container mb-5">
+    <h2>
+        Upload Video: <a href="{% url 'upload' %}" class="btn btn-primary">Upload</a>
+    </h2>
+
+    <div class="text-center">
+        <h2>Uploaded Videos</h2>
+        <hr>
+
+        {% for video in videos %}
+            <h3 class="text-start">
+                {{forloop.counter}}. {{video.name}} 
+                <a href="{% url 'edit' video.id %}" class="btn btn-primary">Edit</a>
+                <a href="{% url 'delete' video.id %}" class="btn btn-danger">Delete</a>
+            </h3>
+            
+            <video class="embed-responsive embed-responsive-16by9 mb-5" controls="controls" width="1000">
+                <source src="{{video.video.url}}" type="video/mp4">
+                <track src="media/subtitles/{{video.name}}.vtt" kind="subtitles" srclang="en" label="English" default>
+            </video>
+        {% endfor %}
+        
+    </div>
+</div>
+
+<script>
+    function addRow() {
+        // Get a reference to the table
+        let tableRef = document.getElementById("vttTable");
+
+        // Insert a row at the end of the table
+        let newRow = tableRef.insertRow(-1);
+
+        // Insert a cell in the row at index 0
+        let startCell = newRow.insertCell(0);
+        let endCell = newRow.insertCell(1);
+        let subCell = newRow.insertCell(2);
+
+        // Append a text node to the cell
+        startInput = document.createElement('input');
+        startInput.setAttribute('type','text');
+        startInput.setAttribute('name','startTime');
+        startInput.setAttribute('class','form-control');
+        startInput.setAttribute('placeholder','Enter Start Time in format HH:MM:SS');
+
+        endInput = document.createElement('input');
+        endInput.setAttribute('type','text');
+        endInput.setAttribute('name','endTime');
+        endInput.setAttribute('class','form-control');
+        endInput.setAttribute('placeholder','Enter End Time in format HH:MM:SS');
+
+        subInput = document.createElement('textarea');
+        subInput.setAttribute('name','subs');
+        subInput.setAttribute('class','form-control');
+        subInput.setAttribute('placeholder','Enter Subtitles');
+
+        startCell.appendChild(startInput);
+        endCell.appendChild(endInput);
+        subCell.appendChild(subInput);
+    }
+</script>
+{% endblock content %}
